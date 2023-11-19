@@ -46,7 +46,8 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer,nullable=False,primary_key=True)
-    email = Column(EmailType,nullable=False,unique=True)
+    organisation = Column(String,nullable=False)
+    email = Column(EmailType,nullable=False)
     password = Column(String,nullable=False)
     is_admin = Column(Boolean,default=False)
     is_contributor = Column(Boolean,default=False)
