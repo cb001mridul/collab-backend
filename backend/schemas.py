@@ -82,6 +82,7 @@ class TokenData(BaseModel):
 
 class UserUpload(BaseModel):
 
+    organisation: str
     email: EmailStr
     password: str
     is_admin: bool
