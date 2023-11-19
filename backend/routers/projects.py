@@ -13,7 +13,7 @@ router = APIRouter(
     tags=['Projects']
 )
 
-redis_client = redis.Redis(host='13.51.235.207', port=6379, db=0)
+redis_client = redis.Redis(host='13.53.182.223', port=6379, db=0)
 cache_ttl = 60  # Cache time-to-live in seconds
 
 
