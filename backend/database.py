@@ -25,8 +25,8 @@ SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:zasx@51.20.181.232:5432/collab
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
     poolclass=QueuePool,
-    pool_size=10,      # The initial size of the connection pool
-    max_overflow=20,   # The maximum number of connections that can be created beyond the pool_size
+    pool_size=40,      # The initial size of the connection pool
+    max_overflow=50,   # The maximum number of connections that can be created beyond the pool_size
 )
 
 # SessionLocal for reading (autocommit=True for read-only operations)
