@@ -35,4 +35,4 @@ app.include_router(users.router)
 
 if __name__ == "__main__":
     # Run the FastAPI application with Gunicorn using 6 workers
-    uvicorn.run(app, host="0.0.0.0", port=8000, workers=10)
+    uvicorn.run(app, host="0.0.0.0", port=8000, workers=40)
