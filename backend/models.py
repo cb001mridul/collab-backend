@@ -47,7 +47,7 @@ class User(Base):
 
     id = Column(Integer,nullable=False,primary_key=True)
     organisation = Column(String,nullable=False)
-    email = Column(EmailType,nullable=False)
+    email = Column(EmailType,nullable=False,unique=True)
     password = Column(String,nullable=False)
     is_admin = Column(Boolean,default=False)
     is_contributor = Column(Boolean,default=False)
