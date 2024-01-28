@@ -20,7 +20,7 @@ thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=15)
 
 ######################### CONFIGURATIONS ########################
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:zasx@51.20.136.149:5432/collab"
+SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:zasx@16.16.184.14:5432/collab"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
