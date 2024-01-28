@@ -2,9 +2,10 @@ from jose import JWTError,jwt
 from datetime import datetime,timedelta
 from pydantic import EmailStr
 from . import schemas,database,models
-from fastapi import Depends,status,HTTPException
+from fastapi import Depends,status,HTTPException,Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
@@ -40,3 +41,12 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
     return user
+
+
+# Adding a dependency Function
+
+def verify_user(current_user: models.User = Depends(get_current_user)):
+
+    if not current_user.is_verified:
+        raise HTTPException(status_code=403, detail="User not verified")
+    return {"message": "You are verified"}

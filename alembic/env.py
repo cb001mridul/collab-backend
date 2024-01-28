@@ -11,7 +11,7 @@ from backend.models import Base
 config = context.config
 config.set_main_option(
     "sqlalchemy.url",
-    f"postgresql://postgres:zasx@51.20.187.191/collab"
+    f"postgresql://postgres:zasx@51.20.136.149:5432/collab"
 )
 
 # Interpret the config file for Python logging.

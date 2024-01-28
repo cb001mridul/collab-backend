@@ -51,6 +51,8 @@ class User(Base):
     password = Column(String,nullable=False)
     is_admin = Column(Boolean,default=False)
     is_contributor = Column(Boolean,default=False)
+    verification_token = Column(String, unique=True, nullable=True)
+    is_verified = Column(Boolean, default=False)
 
     def to_dict(self):
         return {
@@ -114,6 +116,8 @@ class ProjectAdmin(Base):
 
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    profile_pic = Column(String,nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.current_timestamp())
     updated_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.current_timestamp())
     is_active = Column(Boolean, default=False)
@@ -127,6 +131,8 @@ class ProjectAdmin(Base):
         return {
             "id": self.id,
             "name": self.name,
+            "description": self.description,
+            "profile_pic": self.profile_pic,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
             "is_active": self.is_active,

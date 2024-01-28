@@ -2,24 +2,29 @@ from fastapi import FastAPI,Response,status,HTTPException,Depends,APIRouter
 from ..database import get_db_read,get_db_write
 from sqlalchemy import func
 from typing import List,Optional
-from .. import models,schemas
+from .. import models,schemas,auth2
 from sqlalchemy.orm import Session
 import redis
 import json
 from sqlalchemy.exc import SQLAlchemyError
 import traceback
 
+
 router = APIRouter(
     prefix='/contributor',
     tags=['Contributor']
 )
 
-redis_client = redis.Redis(host='51.20.187.191', port=6379, db=0)
+redis_client = redis.Redis(host='51.20.136.149', port=6379, db=0)
 cache_ttl = 60  # Cache time-to-live in seconds
 
 
 @router.get('',status_code=status.HTTP_202_ACCEPTED)
-def contributors(db: Session = Depends(get_db_read)):
+def contributors(
+    db: Session = Depends(get_db_read),
+    current_user:int = Depends(auth2.get_current_user),
+    verified_user: models.User = Depends(auth2.verify_user)
+    ):
 
     # Check if products are available in the Redis cache
     cached_contrib = redis_client.get("contributors")

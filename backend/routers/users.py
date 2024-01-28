@@ -14,12 +14,12 @@ router = APIRouter(
     tags=['Users']
 )
 
-redis_client = redis.Redis(host='51.20.187.191', port=6379, db=0)
+redis_client = redis.Redis(host='51.20.136.149', port=6379, db=0)
 cache_ttl = 60  # Cache time-to-live in seconds
 
 
 @router.get('',status_code=status.HTTP_202_ACCEPTED)
-def projects(db: Session = Depends(get_db_read)):
+def users(db: Session = Depends(get_db_read)):
 
     # Check if products are available in the Redis cache
     cached_users = redis_client.get("users")
@@ -57,27 +57,54 @@ def upload_user(request: schemas.UserUpload, db: Session = Depends(get_db_write)
     with db as session:
         try:
 
-
             hashed_password = utils.hash(request.password)
             request.password = hashed_password
 
-            new_user = models.User(**request.dict())
+            verification_token = utils.generate_verification_token()
+
+            new_user = models.User(**request.dict(), verification_token=verification_token)
+
             session.add(new_user)
 
             session.commit()
             session.refresh(new_user)
 
-            # Clear the "products" cache after a new product is added
             redis_client.delete("users")
 
-            return new_user
+            utils.send_verification_email(new_user.email, verification_token)
+
+            return {"message": "Verification link sent to your email. Please check your inbox."}
+
+            # Clear the "products" cache after a new product is added
         except SQLAlchemyError as e:
             session.rollback()
             error_message = f"Database error: {str(e)}"
             traceback.print_exc()  # Print the traceback for debugging purposes
             raise HTTPException(status_code=500, detail=error_message)
-        
 
+
+@router.get('/verify-email/{verification_token}', status_code=status.HTTP_200_OK)
+def verify_email(verification_token: str, db: Session = Depends(get_db_write)):
+    with db as session:
+        try:
+            # Find the user with the given verification token
+            user = session.query(models.User).filter(models.User.verification_token == verification_token).first()
+
+            if user:
+                # Mark the user as verified in the database
+                user.is_verified = True
+                session.commit()
+
+                # Clear the "users" cache after a new user is added
+                redis_client.delete("users")
+
+                return {"message": "Email verified successfully. You can now log in."}
+            else:
+                raise HTTPException(status_code=404, detail="User not found")
+        except Exception as e:
+            session.rollback()
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail=f"Error verifying email: {str(e)}")
 
 
 @router.get('/{id}',status_code=status.HTTP_202_ACCEPTED)

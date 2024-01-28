@@ -1,8 +1,8 @@
-"""testin2
+"""migrate
 
-Revision ID: cc57e87710d3
+Revision ID: f806d3ff06ab
 Revises: 
-Create Date: 2023-11-24 15:58:24.856038
+Create Date: 2024-01-28 16:49:00.182458
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ from sqlalchemy_utils import EmailType
 
 
 # revision identifiers, used by Alembic.
-revision = 'cc57e87710d3'
+revision = 'f806d3ff06ab'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -42,8 +42,11 @@ def upgrade() -> None:
     sa.Column('password', sa.String(), nullable=False),
     sa.Column('is_admin', sa.Boolean(), nullable=True),
     sa.Column('is_contributor', sa.Boolean(), nullable=True),
+    sa.Column('verification_token', sa.String(), nullable=True),
+    sa.Column('is_verified', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('verification_token')
     )
     op.create_table('contributors',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -61,6 +64,8 @@ def upgrade() -> None:
     op.create_table('padmin',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('profile_pic', sa.String(), nullable=True),
     sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
     sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=True),

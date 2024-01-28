@@ -29,6 +29,8 @@ class UploadEdu(BaseModel):
 class UploadAdmin(BaseModel):
     
     name: str
+    description: str
+    profile_fic: str
     educations: List[UploadEdu]
     experiences: List[UploadExp]  # List of experience IDs (integers)
     created_at: datetime

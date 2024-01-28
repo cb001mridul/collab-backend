@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Depends,HTTPException
+from fastapi import FastAPI,Depends,HTTPException,Request
 from sqlalchemy.orm import Session
 from . import models
 from .database import engine
@@ -7,7 +7,6 @@ from typing import List
 from .routers import padmins,contributor,projects,auth,users
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-
 
 # models.Base.metadata.create_all(bind=engine)
 
@@ -24,6 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 
 )
+
 
 app.include_router(padmins.router)
 app.include_router(contributor.router)
