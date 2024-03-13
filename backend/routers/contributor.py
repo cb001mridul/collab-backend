@@ -15,7 +15,7 @@ router = APIRouter(
     tags=['Contributor']
 )
 
-redis_client = redis.Redis(host='16.16.184.14', port=6379, db=0)
+redis_client = redis.Redis(host='51.20.142.197', port=6379, db=0)
 cache_ttl = 60  # Cache time-to-live in seconds
 
 

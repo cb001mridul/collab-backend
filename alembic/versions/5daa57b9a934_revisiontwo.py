@@ -1,8 +1,8 @@
-"""migrate
+"""revisiontwo
 
-Revision ID: f806d3ff06ab
+Revision ID: 5daa57b9a934
 Revises: 
-Create Date: 2024-01-28 16:49:00.182458
+Create Date: 2024-03-13 11:25:06.997141
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ from sqlalchemy_utils import EmailType
 
 
 # revision identifiers, used by Alembic.
-revision = 'f806d3ff06ab'
+revision = '5daa57b9a934'
 down_revision = None
 branch_labels = None
 depends_on = None
