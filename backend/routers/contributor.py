@@ -22,8 +22,6 @@ cache_ttl = 60  # Cache time-to-live in seconds
 @router.get('',status_code=status.HTTP_202_ACCEPTED)
 def contributors(
     db: Session = Depends(get_db_read),
-    current_user:int = Depends(auth2.get_current_user),
-    verified_user: models.User = Depends(auth2.verify_user)
     ):
 
     # Check if products are available in the Redis cache
