@@ -86,6 +86,7 @@ class UserUpload(BaseModel):
 
     organisation: str
     email: EmailStr
+    name: str
     password: str
     is_admin: bool
     is_contributor: bool
