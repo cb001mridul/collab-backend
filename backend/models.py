@@ -197,6 +197,7 @@ class Project(Base):
 
     id = Column(Integer,nullable=False,primary_key=True)
     title = Column(String,nullable=False)
+    subtitle = Column(String,nullable=True)
     description = Column(Text,nullable=False)
     tech_used = Column(ARRAY(String),nullable=False)
     domain = Column(ARRAY(String),nullable=False)
@@ -211,6 +212,7 @@ class Project(Base):
         return {
             "id": self.id,
             "title": self.title,
+            "subtitle": self.subtitle,
             "description": self.description,
             "tech_used": self.tech_used,
             "domain": self.domain,
@@ -225,8 +227,25 @@ class Project(Base):
                 "name": self.user.name
             }
         }
-    
 
+
+class Applied(Base):
+
+    __tablename__ = "applied"
+
+    id = Column(Integer,primary_key=True,nullable=False)
+    contributor_id = Column(String,nullable=False)
+    project_id = Column(String,nullable=False)
+    admin_id = Column(String,nullable=False)
+    token = Column(String,nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "contributor_id": self.contributor_id,
+            "project_id": self.project_id,
+            "admin_id": self.admin_id
+        }
 
 # ifferent model for Exp and Education
 # start date

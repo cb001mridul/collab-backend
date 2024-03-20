@@ -58,6 +58,7 @@ class UploadContributor(BaseModel):
 class ProjectUpload(BaseModel):
 
     title: str
+    subtitle: str
     description: str
     tech_used: List[str]
     domain: List[str]
