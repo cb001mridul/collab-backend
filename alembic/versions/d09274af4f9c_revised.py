@@ -1,8 +1,8 @@
-"""revisiontwo
+"""Revised
 
-Revision ID: 5daa57b9a934
+Revision ID: d09274af4f9c
 Revises: 
-Create Date: 2024-03-13 11:25:06.997141
+Create Date: 2024-03-20 21:43:15.689279
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ from sqlalchemy_utils import EmailType
 
 
 # revision identifiers, used by Alembic.
-revision = '5daa57b9a934'
+revision = 'd09274af4f9c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -39,6 +39,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('organisation', sa.String(), nullable=False),
     sa.Column('email', EmailType(length=255), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
     sa.Column('password', sa.String(), nullable=False),
     sa.Column('is_admin', sa.Boolean(), nullable=True),
     sa.Column('is_contributor', sa.Boolean(), nullable=True),
@@ -63,7 +64,6 @@ def upgrade() -> None:
     )
     op.create_table('padmin',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('profile_pic', sa.String(), nullable=True),
     sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),

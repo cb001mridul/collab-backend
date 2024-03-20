@@ -48,6 +48,7 @@ class User(Base):
     id = Column(Integer,nullable=False,primary_key=True)
     organisation = Column(String,nullable=False)
     email = Column(EmailType,nullable=False,unique=True)
+    name = Column(String, nullable=False)
     password = Column(String,nullable=False)
     is_admin = Column(Boolean,default=False)
     is_contributor = Column(Boolean,default=False)
@@ -115,7 +116,6 @@ class ProjectAdmin(Base):
     __tablename__ = "padmin"
 
     id = Column(Integer, nullable=False, primary_key=True)
-    name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     profile_pic = Column(String,nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.current_timestamp())
@@ -141,7 +141,7 @@ class ProjectAdmin(Base):
             "user": {
                 "id": self.user.id,
                 "email": self.user.email,
-                "is_admin": self.user.is_admin
+                "is_admin": self.user.is_admin,
             },
             "experiences": [experience.to_dict() for experience in self.experiences],
             "educations": [education.to_dict() for education in self.educations]
@@ -164,7 +164,6 @@ class Contributor(Base):
 
     user_id = Column(Integer,ForeignKey("users.id",ondelete="CASCADE"),nullable=False)
     user = relationship("User")
-
     experiences = relationship("Experience", secondary=contributor_experience_association, overlaps="contributors")
     educations = relationship("Education", secondary=contributor_education_association, overlaps="contributors")
 
@@ -222,7 +221,8 @@ class Project(Base):
             "user": {
                 "id": self.user.id,
                 "email": self.user.email,
-                "is_admin": self.user.is_admin
+                "is_admin": self.user.is_admin,
+                "name": self.user.name
             }
         }
     
