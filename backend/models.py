@@ -230,23 +230,19 @@ class Project(Base):
 
 
 class Applied(Base):
-
     __tablename__ = "applied"
 
-    id = Column(Integer,primary_key=True,nullable=False)
-    contributor_id = Column(String,nullable=False)
-    project_id = Column(String,nullable=False)
-    admin_id = Column(String,nullable=False)
-    token = Column(String,nullable=False)
-
+    id = Column(Integer, primary_key=True, nullable=False)
+    contributor_id = Column(Integer, ForeignKey("contributors.id", ondelete="CASCADE"), nullable=False)
+    
+    # Define the relationship to Contributor
+    contributor = relationship("Contributor")
+    
     def to_dict(self):
         return {
             "id": self.id,
-            "contributor_id": self.contributor_id,
-            "project_id": self.project_id,
-            "admin_id": self.admin_id
+            "contributor": self.contributor.to_dict()  # Include contributor data in the dictionary
         }
-
 # ifferent model for Exp and Education
 # start date
 # end date 

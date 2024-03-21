@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import padmins, contributor, projects, auth, users
+from .routers import padmins, contributor, projects, auth, users,applied
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -18,6 +18,7 @@ app.include_router(contributor.router)
 app.include_router(projects.router)
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(applied.router)
 
 # This section will be executed if the script is run directly
 if __name__ == "__main__":

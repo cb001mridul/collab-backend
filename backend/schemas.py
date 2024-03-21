@@ -91,3 +91,8 @@ class UserUpload(BaseModel):
     password: str
     is_admin: bool
     is_contributor: bool
+
+
+class Apply(BaseModel):
+
+    contributor_id: int
