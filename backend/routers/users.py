@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 import redis
 import json
 from sqlalchemy.exc import SQLAlchemyError
-from ..celery import send_verification_email_task
+from ..utils import send_verification_email
 
 router = APIRouter(
     prefix='/users',
@@ -73,7 +73,7 @@ async def upload_user(request: schemas.UserUpload, db: Session = Depends(get_db_
             redis_client.delete("users")
 
             print("Before Celery task")
-            send_verification_email_task.delay(new_user.email, verification_token)
+            send_verification_email(new_user.email, verification_token)
             print("After Celery Task")
 
             return {"message": "Verification link sent to your email. Please check your inbox."}
