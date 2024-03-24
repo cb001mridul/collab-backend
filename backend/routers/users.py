@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 import redis
 import json
 from sqlalchemy.exc import SQLAlchemyError
-from ..utils import send_verification_email
+# from ..utils import send_verification_email
+from ..celery import send_verification_email_task
 
 router = APIRouter(
     prefix='/users',
@@ -73,7 +74,7 @@ def upload_user(request: schemas.UserUpload, db: Session = Depends(get_db_write)
             redis_client.delete("users")
 
             try:
-                send_verification_email(new_user.email, verification_token)
+                send_verification_email_task.delay(new_user.email, verification_token)
             except Exception as e:
                 print(f"The error is {str(e)}")
                 session.rollback()
