@@ -156,6 +156,7 @@ class Contributor(Base):
     id = Column(Integer,nullable=False,primary_key=True)
     name = Column(String,nullable=False)
     role = Column(String,nullable=False)
+    phone_number = Column(String,nullable=True)
     stack = Column(ARRAY(String),nullable=False)
     bio = Column(Text,nullable=False)
     profile_pic = Column(String,nullable=True)
@@ -174,6 +175,7 @@ class Contributor(Base):
             "id": self.id,
             "name": self.name,
             "role": self.role,
+            "phone_number": self.phone_number,
             "stack": self.stack,
             "bio": self.bio,
             "profile_pic": self.profile_pic,
