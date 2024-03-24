@@ -54,7 +54,7 @@ def users(db: Session = Depends(get_db_read)):
 
 
 @router.post('',status_code=status.HTTP_201_CREATED)
-async def upload_user(request: schemas.UserUpload, db: Session = Depends(get_db_write)):
+def upload_user(request: schemas.UserUpload, db: Session = Depends(get_db_write)):
     with db as session:
         try:
 
@@ -72,9 +72,12 @@ async def upload_user(request: schemas.UserUpload, db: Session = Depends(get_db_
 
             redis_client.delete("users")
 
-            print("Before Celery task")
-            send_verification_email(new_user.email, verification_token)
-            print("After Celery Task")
+            try:
+                send_verification_email(new_user.email, verification_token)
+            except Exception as e:
+                print(f"The error is {str(e)}")
+                session.rollback()
+                raise HTTPException(status_code=500, detail="Failed to send verification email")
 
             return {"message": "Verification link sent to your email. Please check your inbox."}
 
