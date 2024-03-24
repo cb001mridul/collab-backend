@@ -70,6 +70,8 @@ class Experience(Base):
 
     id = Column(Integer, nullable=False, primary_key=True)
     company_name = Column(String, nullable=False)
+    description = Column(String,nullable=True)
+    location = Column(String,nullable=True)
     position = Column(String, nullable=False)
     start_date = Column(Date, default=func.current_date())
     end_date = Column(Date, default=func.current_date())
@@ -81,6 +83,8 @@ class Experience(Base):
         return {
             "id": self.id,
             "company_name": self.company_name,
+            "description": self.description,
+            "location": self.location,
             "position": self.position,
             "start_date": self.start_date.isoformat(),
             "end_date": self.end_date.isoformat()
