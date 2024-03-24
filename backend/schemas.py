@@ -14,6 +14,8 @@ class UploadExp(BaseModel):
 
     company_name: str
     position: str
+    description: str
+    location: str
     start_date: date
     end_date: date
 
