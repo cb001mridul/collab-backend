@@ -101,3 +101,35 @@ def update_experience(contributor_id: int, experience_id: int, experience_data: 
         except SQLAlchemyError as e:
             session.rollback()
             raise HTTPException(status_code=500, detail="Database error")
+
+
+
+@router.delete('/{contributor_id}/{experience_id}', status_code=status.HTTP_204_NO_CONTENT)
+def delete_experience(contributor_id: int, experience_id: int, db: Session = Depends(get_db_write)):
+    with db as session:
+        try:
+            # Retrieve the contributor and the experience
+            contributor = session.query(models.Contributor).filter(models.Contributor.id == contributor_id).first()
+            if not contributor:
+                raise HTTPException(status_code=404, detail="Contributor not found")
+            
+            experience = session.query(models.Experience).filter(models.Experience.id == experience_id).first()
+            if not experience:
+                raise HTTPException(status_code=404, detail="Experience not found")
+
+            # Remove the experience from the contributor's experiences
+            contributor.experiences.remove(experience)
+            session.commit()
+
+            # Delete the experience
+            session.delete(experience)
+            session.commit()
+
+            # Clear all data stored in Redis
+            redis_client.flushall()
+
+            # Return successful deletion response
+            return None
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise HTTPException(status_code=500, detail="Database error")

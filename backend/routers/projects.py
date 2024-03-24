@@ -139,3 +139,4 @@ def delete_project(id: int,db: Session = Depends(get_db_write)):
         except SQLAlchemyError as e:
             session.rollback()
             raise HTTPException(status_code=500, detail="Database error")
+            
