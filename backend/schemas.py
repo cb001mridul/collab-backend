@@ -42,6 +42,7 @@ class UploadAdmin(BaseModel):
 class UploadContributor(BaseModel):
 
     name: str
+    phone_number: str
     role: str
     stack: List[str]
     bio: str
