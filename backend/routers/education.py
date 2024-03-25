@@ -9,8 +9,8 @@ import json
 from sqlalchemy.exc import SQLAlchemyError
 
 router = APIRouter(
-    prefix='/experience',
-    tags=['Experience']
+    prefix='/education',
+    tags=['Education']
 )
 
 redis_client = redis.Redis(host='51.20.142.197', port=6379, db=0)
@@ -19,64 +19,64 @@ cache_ttl = 60  # Cache time-to-live in seconds
 
 
 @router.get('',status_code=status.HTTP_202_ACCEPTED)
-def experience(db: Session = Depends(get_db_read)):
+def education(db: Session = Depends(get_db_read)):
 
     # Check if products are available in the Redis cache
-    cached_exp = redis_client.get("experience")
-    if cached_exp:
+    cached_edu = redis_client.get("education")
+    if cached_edu:
         # If found in the cache, decode the JSON and return the cached data
-        exp_dict = json.loads(cached_exp)
+        edu_dict = json.loads(cached_edu)
 
         # Check if products are still in the database
         with db as session:
-            exp_in_db = session.query(models.Experience).all()
+            edu_in_db = session.query(models.Education).all()
 
-        if not exp_in_db:
+        if not edu_in_db:
             # Products have been deleted from the database, so delete the cached data
-            redis_client.delete("experience")
+            redis_client.delete("education")
 
             return []
     else:
         with db as session:
             try:
-                exps = session.query(models.Experience).all()
-                exp_dict = [exp.to_dict() for exp in exps]
+                edus = session.query(models.Education).all()
+                edu_dict = [edu.to_dict() for edu in edus]
 
                 # Cache the result in Redis after JSON serialization
-                redis_client.setex("experience", cache_ttl, json.dumps(exp_dict))
+                redis_client.setex("education", cache_ttl, json.dumps(edu_dict))
             except SQLAlchemyError as e:
                 session.rollback()
                 raise HTTPException(status_code=500, detail="Database error")
 
-    return exp_dict
+    return edu_dict
 
 
 
 @router.post('/{contributor_id}',status_code=status.HTTP_201_CREATED)
-def upload_experience(contributor_id: int,experience_data: schemas.UploadExp, db: Session = Depends(get_db_write)):
+def upload_education(contributor_id: int,education_data: schemas.UploadEdu, db: Session = Depends(get_db_write)):
     with db as session:
         try:
             contributor = session.query(models.Contributor).filter(models.Contributor.id == contributor_id).first()
             if not contributor:
                 raise HTTPException(status_code=404, detail="Contributor not found")
             
-            new_experience = models.Experience(**experience_data.dict())
-            contributor.experiences.append(new_experience)
+            new_education = models.Education(**education_data.dict())
+            contributor.educations.append(new_education)
             session.commit()
-            session.refresh(new_experience)
+            session.refresh(new_education)
 
             # Clear the "products" cache after a new product is added
             redis_client.flushall()
 
-            return new_experience
+            return new_education
         except SQLAlchemyError as e:
             session.rollback()
             raise HTTPException(status_code=500, detail="Database error")
             
 
 
-@router.put('/{contributor_id}/{experience_id}', status_code=status.HTTP_200_OK)
-def update_experience(contributor_id: int, experience_id: int, experience_data: schemas.UploadExp, db: Session = Depends(get_db_write)):
+@router.put('/{contributor_id}/{education_id}', status_code=status.HTTP_200_OK)
+def update_education(contributor_id: int, education_id: int, education_data: schemas.UploadEdu, db: Session = Depends(get_db_write)):
     with db as session:
         try:
             # Retrieve the contributor and the experience
@@ -84,28 +84,28 @@ def update_experience(contributor_id: int, experience_id: int, experience_data: 
             if not contributor:
                 raise HTTPException(status_code=404, detail="Contributor not found")
             
-            experience = session.query(models.Experience).filter(models.Experience.id == experience_id).first()
-            if not experience:
-                raise HTTPException(status_code=404, detail="Experience not found")
+            education = session.query(models.Education).filter(models.Education.id == education_id).first()
+            if not education:
+                raise HTTPException(status_code=404, detail="Education not found")
 
             # Update the experience data
-            for key, value in experience_data.dict().items():
-                setattr(experience, key, value)
+            for key, value in education_data.dict().items():
+                setattr(education, key, value)
 
             session.commit()
 
             # Clear all data stored in Redis
             redis_client.flushall()
 
-            return experience
+            return education
         except SQLAlchemyError as e:
             session.rollback()
             raise HTTPException(status_code=500, detail="Database error")
 
 
 
-@router.delete('/{contributor_id}/{experience_id}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_experience(contributor_id: int, experience_id: int, db: Session = Depends(get_db_write)):
+@router.delete('/{contributor_id}/{education_id}', status_code=status.HTTP_204_NO_CONTENT)
+def delete_education(contributor_id: int, education_id: int, db: Session = Depends(get_db_write)):
     with db as session:
         try:
             # Retrieve the contributor and the experience
@@ -113,16 +113,16 @@ def delete_experience(contributor_id: int, experience_id: int, db: Session = Dep
             if not contributor:
                 raise HTTPException(status_code=404, detail="Contributor not found")
             
-            experience = session.query(models.Experience).filter(models.Experience.id == experience_id).first()
-            if not experience:
-                raise HTTPException(status_code=404, detail="Experience not found")
+            education = session.query(models.Education).filter(models.Education.id == education_id).first()
+            if not education:
+                raise HTTPException(status_code=404, detail="Education not found")
 
             # Remove the experience from the contributor's experiences
-            contributor.experiences.remove(experience)
+            contributor.educations.remove(education)
             session.commit()
 
             # Delete the experience
-            session.delete(experience)
+            session.delete(education)
             session.commit()
 
             # Clear all data stored in Redis

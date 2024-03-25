@@ -97,8 +97,10 @@ class Education(Base):
     __tablename__ = "education"
 
     id = Column(Integer,nullable=False,primary_key=True)
-    institute = Column(String,nullable=False)
-    degree = Column(String,nullable=False)
+    institute = Column(String,nullable=True)
+    description = Column(String,nullable=True)
+    location = Column(String,nullable=True)
+    degree = Column(String,nullable=True)
     start_date = Column(Date,default=func.current_date())
     end_date = Column(Date,default=func.current_date())
 
@@ -109,6 +111,8 @@ class Education(Base):
         return {
             "id": self.id,
             "institute": self.institute,
+            "description": self.description,
+            "location": self.location,
             "degree": self.degree,
             "start_date": self.start_date.isoformat(),
             "end_date": self.end_date.isoformat()

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import padmins, contributor, projects, auth, users,applied,experience
+from .routers import padmins, contributor, projects, auth, users,applied,experience,education
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -20,6 +20,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(applied.router)
 app.include_router(experience.router)
+app.include_router(education.router)
 
 
 

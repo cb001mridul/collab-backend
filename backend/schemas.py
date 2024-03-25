@@ -24,6 +24,8 @@ class UploadEdu(BaseModel):
 
     institute: str
     degree: str
+    description: str
+    location: str
     start_date: date
     end_date: str
 
