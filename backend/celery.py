@@ -2,7 +2,7 @@ from celery import Celery
 from .utils import send_verification_email
 from multiprocessing import cpu_count
 
-redis_host = '51.20.142.197'
+redis_host = '13.48.5.200'
 redis_port = 6379
 
 # Celery configuration
